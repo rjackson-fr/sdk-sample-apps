@@ -173,7 +173,13 @@ class LoginViewController: UIViewController {
                         self.loginStackView.addArrangedSubview(textField)
                         self.textFieldArray.append(textField)
                     }
-                    
+                    if let deviceProfileCallback = node.callbacks.first as? DeviceProfileCallback {
+                        deviceProfileCallback.execute { _ in
+                            node.next { (user: FRUser?, node, error) in
+                                self.handleNode(token: token, node: node, error: error)
+                            }
+                        }
+                    }
                     if let choiceCallback = callback as? ChoiceCallback {
                         let alert = UIAlertController(title: "Choice", message: choiceCallback.prompt, preferredStyle: .alert)
                         for choice in choiceCallback.choices {
